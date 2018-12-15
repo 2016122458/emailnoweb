@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Realm - Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Bluth Company">
+    <link rel="shortcut icon" href="assets/ico/favicon.html">
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/theme.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/alertify.css" rel="stylesheet">
+    <link rel="Favicon Icon" href="favicon.ico">
+    
+    <link href="assets/css/colorpicker.css" rel="stylesheet">
+    <link href="assets/css/datepicker.css" rel="stylesheet">
+    <link href="assets/css/timepicker.css" rel="stylesheet">
+    <link href="assets/css/select2.css" rel="stylesheet">
+    
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="wrap">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <div class="logo">
+            <img src="assets/img/logo.png" alt="Realm Admin Template">
+          </div>
+           <a class="btn btn-navbar visible-phone" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+           <a class="btn btn-navbar slide_menu_left visible-tablet">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="top-menu visible-desktop">
+            <ul class="pull-left">
+              <li><a id="messages" data-notification="0" href="#"><i class="icon-envelope"></i> Messages</a></li>
+              <li><a id="notifications" data-notification="0" href="#"><i class="icon-globe"></i> Notifications</a></li>
+            </ul>
+            <ul class="pull-right">  
+              <li><a href="login.html"><i class="icon-off"></i> Logout</a></li>
+            </ul>
+          </div>
+
+          <div class="top-menu visible-phone visible-tablet">
+            <ul class="pull-right">  
+              <li><a title="link to View all Messages page, no popover in phone view or tablet" href="#"><i class="icon-envelope"></i></a></li>
+              <li><a title="link to View all Notifications page, no popover in phone view or tablet" href="#"><i class="icon-globe"></i></a></li>
+              <li><a href="login.html"><i class="icon-off"></i></a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <!-- Side menu -->  
+      <div class="sidebar-nav nav-collapse collapse">
+        <div class="user_side clearfix">
+          <img src="assets/img/odinn.jpg" alt="Odinn god of Thunder">
+          <h5>Odinn</h5>
+          <a href="#"><i class="icon-cog"></i> Settings</a>        
+        </div>
+        <div class="accordion" id="accordion2">
+          	 <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/index"><i class="icon-dashboard"></i> <span>Dashboard</span></a>
+            </div>
+          </div>
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/emailexport"><i class="icon-table"></i> <span>Export Email</span></a>
+            </div>
+          </div>
+          
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/sendsource"><i class="icon-list-alt"></i> <span>Sendsource Config</span></a>
+            </div>
+          </div>
+          
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/batch"><i class="icon-tasks"></i> <span>Batch Config</span></a>
+            </div>
+          </div>
+          	   
+        </div>
+      </div>
+      <!-- /Side menu -->
+
+      <!-- Main window -->
+      <div class="main_container" id="users_page">
+
+        <div class="row-fluid">
+          <ul class="breadcrumb">
+            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">Pages</a> <span class="divider">/</span></li>
+            <li class="active">email batch</li>
+          </ul>
+          <h2 class="heading">邮件批次</h2>
+        </div> <!-- /row-fluid -->
+
+        <div class="row-fluid">
+          <div class="widget widget-padding span12">
+            <div class="widget-header">
+              <i class="icon-group"></i>
+              <h5>邮件批次配置</h5>
+              <div class="widget-buttons">
+                  <a href="#" data-title="Add User" data-toggle="modal" data-target="#example_modal" onclick="initadd();"><i class="icon-plus"></i></a>
+                  <a href="#" data-title="Collapse" data-collapsed="false" class="collapse"><i class="icon-chevron-up"></i></a>
+              </div>
+            </div>  
+            <div class="widget-body">
+              <table id="users" class="table table-striped table-bordered dataTable">
+                <thead>
+                  <tr>
+                    <th>批次号</th>
+                    <th>描述</th>
+                    <th>导入日期</th>
+                    <th>总数量</th>
+                    <th>成功数量</th>
+                    <th>失败数量</th>
+                    <th>未发送</th>
+                    <th>未验证</th>
+                    <th style="display:none">完成状态</th>
+                    <th>是否完成</th>
+                    <th style="display:none">工作状态</th>
+                    <th>工作状态</th>
+                    <th>批次处理日期</th>
+                    <th>优先级别</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                	<tr th:each="controlbean : ${list}"><!-- 其中m是个临时变量，像for(User u : userList)那样中的u-->  
+        						<td th:text="${controlbean.email_batch}"/>  
+        						<td th:text="${controlbean.email_batch_des}"/>
+        						<td th:text="${controlbean.email_batch_date}"/>
+        						<td th:text="${controlbean.email_batch_count}"/>
+        						<td th:text="${controlbean.email_send_succ_count}"/>
+        						<td th:text="${controlbean.email_send_fail_count}"/>
+        						<td th:text="${controlbean.email_batch_count}-${controlbean.email_send_succ_count}-${controlbean.email_send_fail_count}"/>
+        						<td th:text="${controlbean.email_batch_count}-${controlbean.email_validate_succ_count}-${controlbean.email_validate_fail_count}"/>		
+        						<td th:text="${controlbean.email_batch_status}" style="display:none"/>
+        						<td th:if=" ${controlbean.email_batch_status} eq '01'"><span class="label label-success">Incomplete</span></td>
+        						<td th:if=" ${controlbean.email_batch_status} eq '02'"><span class="label">Completed</span></td>
+        						<td th:text="${controlbean.email_batch_work_status}" style="display:none"/>
+        						<td th:if=" ${controlbean.email_batch_work_status} eq '1'"><span class="label label-success">Working</span></td>
+        						<td th:if=" ${controlbean.email_batch_work_status} eq '0'"><span class="label">On Leave</span></td>
+        						<td th:text="${controlbean.email_batch_work_date}"/>
+        						<td th:text="${controlbean.priority}"/>
+        						<td>
+                      <div class="btn-group">
+                        <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                        Action
+                          <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                          <li><a data-title="Add User" data-toggle="modal" data-target="#example_modal" id="editdata" onclick="initedit(this);"><i class="icon-edit"></i> 启动</a></li>
+                          <li><a href="#" onclick="delete1(this);"><i class="icon-trash"></i> 暂停</a></li>
+                        </ul>
+                      </div>
+                    </td>  
+    							</tr>
+                </tbody>
+              </table>
+            </div> <!-- /widget-body -->
+          </div> <!-- /widget -->
+        </div> <!-- /row-fluid -->
+
+      </div>
+      <!-- /Main window -->
+
+    </div><!--/.fluid-container-->
+    </div><!-- wrap ends-->
+
+    <!-- Example Modal -->
+    <div id="example_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel">邮件批次配置</h3>
+      </div>
+      <div class="modal-body">
+        <!-- 新增邮件发送渠道配置 start-->     
+              <div class="widget-forms clearfix">
+                <form class="form-horizontal" action="/sendsource/save" id="batchinfoForm" method="post">	
+                  	<div class="control-group">
+	                    <label class="control-label">批次号</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="email_batch" name="email_batch" placeholder="批次号">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                    <label class="control-label">批次导入日期</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="email_batch_date" name="email_batch_date" placeholder="批次导入日期">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                    <label class="control-label">批次描述</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="email_batch_des" name="email_batch_des" placeholder="批次描述">
+	                    </div>
+	                  </div>
+	                  
+                	
+	                	<div class="control-group">
+	                    <label class="control-label">批次处理日期</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="plandate" name="plandate" placeholder="批次处理日期">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                    <label class="control-label">优先级</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="priority" name="priority" placeholder="优先级">
+	                    </div>
+	                  </div>
+                  	
+	                  <div class="control-group" style="display:none">
+	                    <label class="control-label">请求方式</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="requestway" name="requestway">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group" style="display:none">
+	                    <label class="control-label">开通标识</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="isopen" name="isopen">
+	                    </div>
+	                  </div>
+	                                   	             
+                </form>
+      			</div>
+        <!-- 新增邮件发送渠道配置 end-->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="saveinfo">启动</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+      </div>
+           
+    </div>
+    
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/raphael-min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src='assets/js/sparkline.js'></script>
+    <script type="text/javascript" src='assets/js/morris.min.js'></script>
+    <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.masonry.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.imagesloaded.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.facybox.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.alertify.min.js"></script> 
+    <script type="text/javascript" src="assets/js/jquery.knob.js"></script>
+    <script type='text/javascript' src='assets/js/fullcalendar.min.js'></script>
+    <script type='text/javascript' src='assets/js/jquery.gritter.min.js'></script>
+    <script type="text/javascript" src="assets/js/realm.js"></script>   
+    <script type="text/javascript" src="assets/js/select2.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-colorpicker.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-timepicker.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="assets/js/messages_zh.js"></script>
+       
+    <!--配置信息-->
+  	<script type="text/javascript">
+  		
+  		var $td;
+  		
+  		$().ready(function() {
+    		$("#batchinfoForm").validate({
+    			rules: {
+					      email_batch_des: {
+					        required: true
+					      },
+					      plandate: {
+					        required: true,
+					        dateISO: true
+					      },
+					      priority:{
+					      	required: true,
+					      	digits: true
+					      }
+					    },
+					messages: {
+								email_batch_des: {
+					        required: "请输入批次描述"
+					      },
+					  		plandate: {
+					  			required: "请输入日期",
+					        dateISO: "请输入日期YYYY-MM-DD"
+					      },
+					      priority:{
+					      	required: "请输入优先级",
+					      	digits: "请输入整数"
+					      }
+					    }  	
+    		});
+			});
+			
+			$("#saveinfo").click(
+				function(){
+					var flag = $("#batchinfoForm").valid();
+					if(!flag){
+        		return;
+    			}
+					
+					$.ajax({       
+          			type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/batch/save" ,//url
+                data: $('#batchinfoForm').serialize(),
+                success: function (result) {
+                		var flag = result.flag;
+                		var requestway = result.requestway;
+                		var plandate = result.plandate;
+                		var priority = result.priority;
+                		if("1" == result.flag){	
+                				if("0" == requestway){
+		                			$td.eq(12).text(plandate);
+		                			$td.eq(13).text(priority);
+		                			if("1"==result.isopen){
+		                				$td.eq(11).empty();
+		                				$td.eq(11).append("<span class='label label-success'>Working</span>");
+		                			}else{
+		                				$td.eq(11).empty();
+		                				$td.eq(11).append("<span class='label'>On Leave</span>");
+		                			}	
+		                		}
+		                		if("1" == requestway){	                		
+		                				location.reload();
+		                		}
+	                	  $("#example_modal").attr("style","none");
+	                		$("#example_modal").removeClass("in");
+	                		$("#example_modal").attr("aria-hidden","true");
+	                		$("#backdropmin").remove(); 
+	                	}     		
+                },
+                error : function() {
+                    alert("异常！");
+                }
+          });
+				}
+			);
+			
+			function initedit(thisObj){
+				$td = $(thisObj).parents('tr').children('td');
+				var email_batch = $td.eq(0).text();
+				var email_batch_des = $td.eq(1).text();
+				var email_batch_date = $td.eq(2).text();
+				var plandate = $td.eq(12).text();
+				
+				$("#email_batch").val("");
+				$("#email_batch_des").val("");
+				$("#email_batch_date").val("");
+				$("#plandate").val("");
+				
+				
+				$("#email_batch").val(email_batch);
+				$("#email_batch_des").val(email_batch_des);
+				$("#email_batch_date").val(email_batch_date);
+				
+				var mydate = new Date();
+				var year = mydate.getFullYear();
+				var month = mydate.getMonth();
+				var date1 = mydate.getDate();
+				month = month + 1;
+				month = month + "";
+				date1 = date1 + "";
+			
+				if(month.length<2){
+					month = "0" + month;
+				}
+				if(date1.length<2){
+					date1 = "0" + date1;
+				}
+				var plandate_def = year + "-" + month + "-" + date1;
+				
+				$("#plandate").val(plandate_def);
+				$("#requestway").val("0");
+				$("#isopen").val("1");
+				$("#email_batch").attr("readonly","readonly");
+				$("#email_batch_date").attr("readonly","readonly");
+				$("#plandate").attr("readonly","readonly");	
+								
+			}
+			
+			function delete1(thisObj){
+				$td = $(thisObj).parents('tr').children('td');
+				var email_batch = $td.eq(0).text();
+				var plandate = $td.eq(12).text();
+				var priority = $td.eq(13).text();
+				var isopen = "0";	
+				$.ajax({       
+          			type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/batch/save?email_batch=" + email_batch + "&plandate=" + plandate + "&requestway=2&isopen=0&priority=" + priority,//url
+                data: {},
+                success: function (result) {
+                		var flag = result.flag;
+                		if("1" == result.flag){
+		                		if("2" == result.requestway){
+		                			if("1"==result.isopen){
+		                				$td.eq(11).empty();
+		                				$td.eq(11).append("<span class='label label-success'>Working</span>");
+		                			}else{
+		                				$td.eq(11).empty();
+		                				$td.eq(11).append("<span class='label'>On Leave</span>");
+		                			}	
+		                		}                	  
+	                	}     		
+                },
+                error : function() {
+                    alert("异常！");
+                }
+        });
+			}
+			
+			function initadd(){
+				
+				var mydate = new Date();
+				var year = mydate.getFullYear();
+				var month = mydate.getMonth();
+				var date1 = mydate.getDate();
+				month = month + 1;
+				month = month + "";
+				date1 = date1 + "";
+			
+				if(month.length<2){
+					month = "0" + month;
+				}
+				if(date1.length<2){
+					date1 = "0" + date1;
+				}
+				var plandate_def = year + "-" + month + "-" + date1;
+				
+				$("#sendsource").val("01");
+				$("#plandate").val(plandate_def);
+				$("#plan_send_count").val("");
+				$("#sleep_minute_min").val("");
+				$("#sleep_minute_max").val("");
+				$("#option1").attr("checked","1");
+				$("#requestway").val("1");
+				
+				$("#sendsourcedisplaysource1").removeAttr("style","display:none");
+				$("#sendsourcedisplaysource").attr("style","display:none");
+				$("#sendsource").removeAttr("readonly","readonly");
+				$("#plandate").removeAttr("readonly","readonly");		
+			}
+					
+  	</script> 
+  </body>
+</html>

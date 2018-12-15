@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Realm - Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Bluth Company">
+    <link rel="shortcut icon" href="assets/ico/favicon.html">
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/theme.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/alertify.css" rel="stylesheet">
+    <link rel="Favicon Icon" href="favicon.ico">
+    
+    <link href="assets/css/colorpicker.css" rel="stylesheet">
+    <link href="assets/css/datepicker.css" rel="stylesheet">
+    <link href="assets/css/timepicker.css" rel="stylesheet">
+    <link href="assets/css/select2.css" rel="stylesheet">
+    
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="wrap">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <div class="logo">
+            <img src="assets/img/logo.png" alt="Realm Admin Template">
+          </div>
+           <a class="btn btn-navbar visible-phone" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+           <a class="btn btn-navbar slide_menu_left visible-tablet">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="top-menu visible-desktop">
+            <ul class="pull-left">
+              <li><a id="messages" data-notification="0" href="#"><i class="icon-envelope"></i> Messages</a></li>
+              <li><a id="notifications" data-notification="0" href="#"><i class="icon-globe"></i> Notifications</a></li>
+            </ul>
+            <ul class="pull-right">  
+              <li><a href="login.html"><i class="icon-off"></i> Logout</a></li>
+            </ul>
+          </div>
+
+          <div class="top-menu visible-phone visible-tablet">
+            <ul class="pull-right">  
+              <li><a title="link to View all Messages page, no popover in phone view or tablet" href="#"><i class="icon-envelope"></i></a></li>
+              <li><a title="link to View all Notifications page, no popover in phone view or tablet" href="#"><i class="icon-globe"></i></a></li>
+              <li><a href="login.html"><i class="icon-off"></i></a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <!-- Side menu -->  
+      <div class="sidebar-nav nav-collapse collapse">
+        <div class="user_side clearfix">
+          <img src="assets/img/odinn.jpg" alt="Odinn god of Thunder">
+          <h5>Odinn</h5>
+          <a href="#"><i class="icon-cog"></i> Settings</a>        
+        </div>
+        <div class="accordion" id="accordion2">
+         		
+         		  <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/index"><i class="icon-dashboard"></i> <span>Dashboard</span></a>
+            </div>
+          </div>
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/emailexport"><i class="icon-table"></i> <span>Export Email</span></a>
+            </div>
+          </div>
+          
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/sendsource"><i class="icon-list-alt"></i> <span>Sendsource Config</span></a>
+            </div>
+          </div>
+          
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle active b_F79999" href="/batch"><i class="icon-tasks"></i> <span>Batch Config</span></a>
+            </div>
+          </div>
+         		
+         		 
+        </div>
+      </div>
+      <!-- /Side menu -->
+
+      <!-- Main window -->
+      <div class="main_container" id="users_page">
+
+        <div class="row-fluid">
+          <ul class="breadcrumb">
+            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">Pages</a> <span class="divider">/</span></li>
+            <li class="active">email sendsource</li>
+          </ul>
+          <h2 class="heading">邮件发送渠道配置</h2>
+        </div> <!-- /row-fluid -->
+
+        <div class="row-fluid">
+          <div class="widget widget-padding span12">
+            <div class="widget-header">
+              <i class="icon-group"></i>
+              <h5>邮件发送渠道</h5>
+              <div class="widget-buttons">
+                  <a href="#" data-title="Add User" data-toggle="modal" data-target="#example_modal" onclick="initadd();"><i class="icon-plus"></i></a>
+                  <a href="#" data-title="Collapse" data-collapsed="false" class="collapse"><i class="icon-chevron-up"></i></a>
+              </div>
+            </div>  
+            <div class="widget-body">
+              <table id="users" class="table table-striped table-bordered dataTable">
+                <thead>
+                  <tr>
+                    <th>日期</th>
+                    <th style="display:none">渠道代码</th>
+                    <th>渠道描述</th>
+                    <th>计划发送数量</th>
+                    <th>实际发送数量</th>
+                    <th>成功数量</th>
+                    <th>失败数量</th>
+                    <th>最小发送间隔</th>
+                    <th>最大发送间隔</th>
+                    <th style="display:none">开启标志</th>
+                    <th>开启标志</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                	<tr th:each="controlbean : ${list}"><!-- 其中m是个临时变量，像for(User u : userList)那样中的u-->  
+        						<td th:text="${controlbean.plan_date}"/>  
+        						<td th:text="${controlbean.send_source}" style="display:none"/>
+        						<td th:text="${controlbean.send_source_des}"/>
+        						<td th:text="${controlbean.plan_send_count}"/>
+        						<td th:text="${controlbean.intfact_send_count}"/>
+        						<td th:text="${controlbean.fact_send_succ_count}"/>
+        						<td th:text="${controlbean.fact_send_fail_count}"/>
+        						<td th:text="${controlbean.sleep_minute_min}"/>
+        						<td th:text="${controlbean.sleep_minute_max}"/>
+        						<td th:text="${controlbean.is_open}" style="display:none"/>
+        						<td th:if=" ${controlbean.is_open} eq '1'"><span class="label label-success">Active</span></td>
+        						<td th:if=" ${controlbean.is_open} eq '0'"><span class="label">Inactive</span></td>
+        						<td>
+                      <div class="btn-group">
+                        <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                        Action
+                          <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                          <li><a data-title="Add User" data-toggle="modal" data-target="#example_modal" id="editdata" onclick="initedit(this);"><i class="icon-edit"></i> Edit</a></li>
+                          <li><a href="#" onclick="delete1(this);"><i class="icon-trash"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>  
+    							</tr>
+                </tbody>
+              </table>
+            </div> <!-- /widget-body -->
+          </div> <!-- /widget -->
+        </div> <!-- /row-fluid -->
+
+      </div>
+      <!-- /Main window -->
+
+    </div><!--/.fluid-container-->
+    </div><!-- wrap ends-->
+
+    <!-- Example Modal -->
+    <div id="example_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel">邮件发送渠道配置</h3>
+      </div>
+      <div class="modal-body">
+        <!-- 新增邮件发送渠道配置 start-->     
+              <div class="widget-forms clearfix">
+                <form class="form-horizontal" action="/sendsource/save" id="sendsourceForm" method="post">
+                		<div class="control-group" id="sendsourcedisplaysource1" >
+	                    <label class="control-label">发送渠道</label>
+	                      <div class="controls">
+	                        <select tabindex="1" data-placeholder="Select here.." class="span2" id="sendsource" name="sendsource">
+	                           <option value="01">SENDGRID</option>
+	                           <option value="02">MAINGUN</option>
+	                           <option value="03">SPARTPOST</option>
+	                        </select>
+	                     </div>
+                  	</div>
+                  	
+                  	<div class="control-group" id="sendsourcedisplaysource" style="display:none">
+	                    <label class="control-label">发送渠道</label>
+	                      <div class="controls">
+	                        <select tabindex="1" data-placeholder="Select here.." class="span2" id="sendsourcedisplay" name="sendsourcedisplay">
+	                           <option value="01">SENDGRID</option>
+	                           <option value="02">MAINGUN</option>
+	                           <option value="03">SPARTPOST</option>
+	                        </select>
+	                     </div>
+	                 </div>
+                	
+	                	<div class="control-group">
+	                    <label class="control-label">计划发送日期</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="plandate" name="plandate" placeholder="计划发送日期">
+	                    </div>
+	                  </div>
+                  	
+                  	<div class="control-group">
+	                    <label class="control-label">计划发送数量</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="plan_send_count" name="plan_send_count" placeholder="计划发送数量">
+	                    </div>
+	                  </div>
+	                  
+	                   <div class="control-group">
+                    		<label class="control-label">是否开启</label>
+		                    <div class="controls">    
+		                      <label class="radio">
+		                        <input type="radio" name="isopen" id="option1" value="1" checked>
+		                        是
+		                      </label> 
+		                      <label class="radio">
+		                        <input type="radio" name="isopen" id="option2" value="0">
+		                        否
+		                      </label> 
+		                    </div>
+                  	</div>
+                  	
+                  	<div class="control-group">
+	                    <label class="control-label">最小休眠间隔</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="sleep_minute_min" name="sleep_minute_min" placeholder="最小休眠间隔">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                    <label class="control-label">最大休眠间隔</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="sleep_minute_max" name="sleep_minute_max" placeholder="最大休眠间隔">
+	                    </div>
+	                  </div>
+	                  
+	                  <div class="control-group" style="display:none">
+	                    <label class="control-label">请求方式</label>
+	                    <div class="controls">
+	                      <input class="span2" type="text"  id="requestway" name="requestway">
+	                    </div>
+	                  </div>
+	                                   	             
+                </form>
+      			</div>
+        <!-- 新增邮件发送渠道配置 end-->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="saveinfo">保存</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+      </div>
+           
+    </div>
+    
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/raphael-min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src='assets/js/sparkline.js'></script>
+    <script type="text/javascript" src='assets/js/morris.min.js'></script>
+    <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.masonry.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.imagesloaded.min.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.facybox.js"></script>   
+    <script type="text/javascript" src="assets/js/jquery.alertify.min.js"></script> 
+    <script type="text/javascript" src="assets/js/jquery.knob.js"></script>
+    <script type='text/javascript' src='assets/js/fullcalendar.min.js'></script>
+    <script type='text/javascript' src='assets/js/jquery.gritter.min.js'></script>
+    <script type="text/javascript" src="assets/js/realm.js"></script>   
+    <script type="text/javascript" src="assets/js/select2.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-colorpicker.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-timepicker.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="assets/js/messages_zh.js"></script>
+       
+    <!--配置信息-->
+  	<script type="text/javascript">
+  		
+  		var $td;
+  		
+  		$().ready(function() {
+    		$("#sendsourceForm").validate({
+    			rules: {
+					      plandate: {
+					        required: true,
+					        minlength:8,
+					        dateISO:true
+					      },
+					      plan_send_count: {
+					        required: true,
+					        digits: true
+					      },
+					      sleep_minute_min: {
+					        required: true,
+					        digits: true
+					      },
+					      sleep_minute_max: {
+					        required: true,
+					        digits: true
+					      }
+					    },
+					messages: {
+					  plandate: {
+					  required: "请输入日期",
+					        dateISO: "请输入日期YYYY-MM-DD"
+					      },
+					      plan_send_count: {
+					        required: "请输入计划发送数量",
+					        digits: "请输入整数"
+					      },
+					      sleep_minute_min: {
+					        required: "请输入最小休眠间隔",
+					        digits: "请输入整数"
+					      },
+					      sleep_minute_max: {
+					        required: "请输入最大休眠间隔",
+					        digits: "请输入整数"
+					      }
+					    }  	
+    		});
+			});
+			
+			$("#saveinfo").click(
+				function(){
+					var flag = $("#sendsourceForm").valid();
+					if(!flag){
+        		return;
+    			}
+					
+					$.ajax({       
+          			type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/sendsource/save" ,//url
+                data: $('#sendsourceForm').serialize(),
+                success: function (result) {
+                		var flag = result.flag;
+                		var requestway = result.requestway;
+                		var emailSendSourceControlBean = result.emailSendSourceControlBean;
+                		if("1" == result.flag){	
+                				if("0" == requestway){
+		                			$td.eq(3).text(emailSendSourceControlBean.plan_send_count);
+		                			$td.eq(7).text(emailSendSourceControlBean.sleep_minute_min);
+		                			$td.eq(8).text(emailSendSourceControlBean.sleep_minute_max);
+		                			$td.eq(9).text(emailSendSourceControlBean.is_open);
+		                			if("1"==emailSendSourceControlBean.is_open){
+		                				$td.eq(10).empty();
+		                				$td.eq(10).append("<span class='label label-success'>Active</span>");
+		                			}else{
+		                				$td.eq(10).empty();
+		                				$td.eq(10).append("<span class='label'>Inactive</span>");
+		                			}	
+		                		}
+		                		if("1" == requestway){	                		
+		                				location.reload();
+		                		}
+	                	  $("#example_modal").attr("style","none");
+	                		$("#example_modal").removeClass("in");
+	                		$("#example_modal").attr("aria-hidden","true");
+	                		$("#backdropmin").remove(); 
+	                	}     		
+                },
+                error : function() {
+                    alert("异常！");
+                }
+          });
+				}
+			);
+			
+			function initedit(thisObj){
+				$td = $(thisObj).parents('tr').children('td');
+				var plandate = $td.eq(0).text();
+				var sendsource = $td.eq(1).text();
+				var sendsourcedes = $td.eq(2).text();
+				var plansendcount = $td.eq(3).text();
+				var sleepminutemin = $td.eq(4).text();
+				var sleepminutemax = $td.eq(5).text();
+				var isopen = $td.eq(6).text();
+				
+				$("#sendsource").val("");
+				$("#sendsourcedisplay").val("");
+				$("#plandate").val("");
+				$("#plan_send_count").val("");
+				$("#sleep_minute_min").val("");
+				$("#sleep_minute_max").val("");
+				$("#option1").attr("checked","1");
+				
+				$("#sendsource").val(sendsource);
+				$("#sendsourcedisplay").val(sendsource);
+				$("#plandate").val(plandate);
+				$("#plan_send_count").val(plansendcount);
+				$("#sleep_minute_min").val(sleepminutemin);
+				$("#sleep_minute_max").val(sleepminutemax);
+				$("#requestway").val("0");
+				
+				if(isopen=="0"){
+					$("#option2").attr("checked","0");
+				}
+				$("#sendsourcedisplaysource").removeAttr("style","display:none");
+				$("#sendsourcedisplaysource").attr("style","display:display");
+				
+				$("#sendsourcedisplaysource1").removeAttr("style","display:display");
+				$("#sendsourcedisplaysource1").attr("style","display:none");
+				$("#sendsourcedisplay").attr("disabled","disabled");
+				
+				$("#sendsource").attr("readonly","readonly");
+				$("#plandate").attr("readonly","readonly");					
+			}
+			
+			function delete1(thisObj){
+				$td = $(thisObj).parents('tr').children('td');
+				var plandate = $td.eq(0).text();
+				var sendsource = $td.eq(1).text();	
+				$.ajax({       
+          			type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/sendsource/save?sendsource=" + sendsource + "&plandate=" + plandate + "&requestway=2",//url
+                data: {},
+                success: function (result) {
+                		var flag = result.flag;
+                		var requestway = result.requestway;
+                		if("1" == result.flag){	
+		                		if("2" == requestway){
+		                			$td.remove();
+		                		}                	  
+	                	}     		
+                },
+                error : function() {
+                    alert("异常！");
+                }
+        });
+					
+			}
+			
+			function initadd(){
+				
+				var mydate = new Date();
+				var year = mydate.getFullYear();
+				var month = mydate.getMonth();
+				var date1 = mydate.getDate();
+				month = month + 1;
+				month = month + "";
+				date1 = date1 + "";
+			
+				if(month.length<2){
+					month = "0" + month;
+				}
+				if(date1.length<2){
+					date1 = "0" + date1;
+				}
+				var plandate_def = year + "-" + month + "-" + date1;
+				
+				$("#sendsource").val("01");
+				$("#plandate").val(plandate_def);
+				$("#plan_send_count").val("");
+				$("#sleep_minute_min").val("");
+				$("#sleep_minute_max").val("");
+				$("#option1").attr("checked","1");
+				$("#requestway").val("1");
+				
+				$("#sendsourcedisplaysource1").removeAttr("style","display:none");
+				$("#sendsourcedisplaysource").attr("style","display:none");
+				$("#sendsource").removeAttr("readonly","readonly");
+				$("#plandate").removeAttr("readonly","readonly");		
+			}
+					
+  	</script> 
+  </body>
+</html>
