@@ -41,11 +41,11 @@ public class EmailApplication implements CommandLineRunner {
 //        thread_sendGrid.start();
 //        System.out.println("thread_sendGrid=" +  thread_sendGrid.getPriority());
 
-//        EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatch =
-//                new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService);
-//        Thread thread_sendMessageBatch = new Thread(emailAppRunableForCloudEmailBatch);
-//        thread_sendMessageBatch.start();
-//        System.out.println("thread_sendMessageBatch=" +  thread_sendMessageBatch.getPriority());
+        EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatch =
+                new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService);
+        Thread thread_sendMessageBatch = new Thread(emailAppRunableForCloudEmailBatch);
+        thread_sendMessageBatch.start();
+        System.out.println("thread_sendMessageBatch=" +  thread_sendMessageBatch.getPriority());
 
     }
 }
