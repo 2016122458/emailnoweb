@@ -40,7 +40,7 @@ public class EmailApplication implements CommandLineRunner {
 //        Thread thread_sendGrid = new Thread(emailAppRunableForSendGrid);
 //        thread_sendGrid.start();
 //        System.out.println("thread_sendGrid=" +  thread_sendGrid.getPriority());
-
+        System.out.print("test");
         EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatch =
                 new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService);
         Thread thread_sendMessageBatch = new Thread(emailAppRunableForCloudEmailBatch);
