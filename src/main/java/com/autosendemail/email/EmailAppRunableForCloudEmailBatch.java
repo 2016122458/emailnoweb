@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -21,6 +22,12 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
     private static int LIMITE_STATIC = 10;
 
     private EmailBatchInfoService emailBatchInfoService;
+
+    @Autowired
+    private EmailSendSourceControlRepository emailSendSourceControlRepository;
+
+    @Autowired
+    private EmailAutoSendConfigRepository emailAutoSendConfigRepository;
 
     public EmailAppRunableForCloudEmailBatch( EmailDbOperate emailDbOperate, EmailBatchInfoService emailBatchInfoService){
         this.emailDbOperateForSend = emailDbOperate;
@@ -56,8 +63,10 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
         int fact_send_count = 0;
         int min = 0;
         int max = 0;
+        String sendway = "";
 
-        Map map = emailDbOperateForSend.getSendDay(datestr);
+        Map map = emailDbOperateForSend.getSendDay(datestr,"01");
+
         if(map != null){
             is_open_Test = map.get("IS_OPEN_TEST").toString();
             is_open = map.get("IS_OPEN").toString();
@@ -65,15 +74,40 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
             fact_send_count = Integer.parseInt(map.get("FACT_SEND_COUNT").toString());
             min = Integer.parseInt(map.get("SLEEP_MINUTE_MIN").toString());
             max = Integer.parseInt(map.get("SLEEP_MINUTE_MAX").toString());
-            System.out.println(datestr1 + "获取发送计划：" + plan_send_count);
+            sendway = map.get("SEND_WAY").toString();
+            System.out.println(datestr1 + "手工设置获取发送计划：" + plan_send_count);
         }else{
-            System.out.println(datestr1 + "当前时间：" + datestr + ",当前没有任务！");
-            try {
-                Thread.sleep(1000 * 60 * 2);
-            }catch(Exception e){
+            Map map1 = emailDbOperateForSend.getSendDay(datestr,"02");
+            if(map1 != null){
+                is_open_Test = map1.get("IS_OPEN_TEST").toString();
+                is_open = map1.get("IS_OPEN").toString();
+                plan_send_count = Integer.parseInt(map1.get("PLAN_SEND_COUNT").toString());
+                fact_send_count = Integer.parseInt(map1.get("FACT_SEND_COUNT").toString());
+                min = Integer.parseInt(map1.get("SLEEP_MINUTE_MIN").toString());
+                max = Integer.parseInt(map1.get("SLEEP_MINUTE_MAX").toString());
+                sendway = map1.get("SEND_WAY").toString();
+                System.out.println(datestr1 + "自动设置获取发送计划：" + plan_send_count);
+            }else {
+                EmailAutoSendConfigEntity emailAutoSendConfigEntity = emailAutoSendConfigRepository.findOne("01");
+                if (emailAutoSendConfigEntity != null && "1".equalsIgnoreCase(emailAutoSendConfigEntity.getIsopen())) {
+                    EmailSendSourceControlEntity emailSendSourceControlEntity = new EmailSendSourceControlEntity();
+                    emailSendSourceControlEntity.setPlandate(datestr);
+                    emailSendSourceControlEntity.setSendway("02");
+                    emailSendSourceControlEntity.setIsopen("1");
+                    emailSendSourceControlEntity.setPlan_send_count(emailAutoSendConfigEntity.getSendcount());
+                    emailSendSourceControlEntity.setSleep_minute_min(5);
+                    emailSendSourceControlEntity.setSleep_minute_max(10);
+                    emailSendSourceControlEntity.setIsopenTest("1");
+                    emailSendSourceControlRepository.save(emailSendSourceControlEntity);
+                }
                 System.out.println(datestr1 + "当前时间：" + datestr + ",当前没有任务！");
+                try {
+                    Thread.sleep(1000 * 60 * 2);
+                } catch (Exception e) {
+                    System.out.println(datestr1 + "当前时间：" + datestr + ",当前没有任务！");
+                }
+                return;
             }
-            return;
         }
 
         if("0".equals(is_open)){
@@ -127,7 +161,6 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                     System.out.println(datestr1 + "当前时间：" + datestr + ",有可用发送地址！");
                     EmailSourceBean sourceBean = new EmailSourceBean();
                     sourceBean.setPlan_date(datestr);
-
 
                     for (Map emaiinfoArrd : toEmails) {
                         String apikey = "";
@@ -190,6 +223,10 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                         EmailInfo emailinfo = new EmailInfo();
                         emailinfo.setEmail_from(userEmain);
 
+                        emailinfo.setEmail_subject(EmailBodyTemplateForCloudEmail.getSubject());
+                        emailinfo.setEmail_content(EmailBodyTemplateForCloudEmail.getBoay(user));
+                        emailinfo.setEmail_reply_to(userEmain);
+
                         if("1".equalsIgnoreCase(is_open_Test)){
                             SimpleDateFormat dayFormat = new SimpleDateFormat("yyyyMMdd");
                             String day = dayFormat.format(new Date());
@@ -197,15 +234,13 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                             if(apiKeyDayCount % 50 == 0){
                                 System.out.println(datestr1 + "开始发送探测邮件!");
                                 emailinfo.setEmail_to("wangshuaiws0716@163.com");
+                                emailinfo.setEmail_subject(apikey + "探测邮件");
                             }else {
                                 emailinfo.setEmail_to(emaiinfoArrd.get("EMAIL_ADDR").toString());
                             }
                         }else{
                             emailinfo.setEmail_to(emaiinfoArrd.get("EMAIL_ADDR").toString());
                         }
-                        emailinfo.setEmail_subject(EmailBodyTemplateForCloudEmail.getSubject());
-                        emailinfo.setEmail_content(EmailBodyTemplateForCloudEmail.getBoay(user));
-                        emailinfo.setEmail_reply_to(userEmain);
                         String email_batch = emaiinfoArrd.get("EMAIL_BATCH").toString();
                         String send_status = "";
                         try {
@@ -242,7 +277,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                         }finally {
                             String send_status_des = EmailUnit.SEND_STATUS.get(send_status).toString();
                             emailDbOperateForSend.upDateEmail(emailinfo,send_status,userInfo.getEmail_user(),send_status_des,sendsource,source_des);
-                            emailDbOperateForSend.upDateSourceControlFactCountNew(sourceBean,send_status);
+                            emailDbOperateForSend.upDateSourceControlFactCountNew(sourceBean,send_status,sendway);
                             emailDbOperateForSend.upDateBatchSendCount(email_batch,send_status);
 
                             SimpleDateFormat monthFormatTemp = new SimpleDateFormat("yyyyMMdd");
