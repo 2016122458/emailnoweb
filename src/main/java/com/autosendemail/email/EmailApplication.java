@@ -26,6 +26,12 @@ public class EmailApplication implements CommandLineRunner {
     @Autowired
     private EmailBatchInfoService emailBatchInfoService;
 
+    @Autowired
+    private EmailSendSourceControlRepository emailSendSourceControlRepository;
+
+    @Autowired
+    private EmailAutoSendConfigRepository emailAutoSendConfigRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(EmailApplication.class, args);
     }
@@ -39,7 +45,8 @@ public class EmailApplication implements CommandLineRunner {
 //        thread_sendGrid.start();
 //        System.out.println("thread_sendGrid=" +  thread_sendGrid.getPriority());
         EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatch =
-                new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService);
+                new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService,
+                        emailSendSourceControlRepository,emailAutoSendConfigRepository);
         Thread thread_sendMessageBatch = new Thread(emailAppRunableForCloudEmailBatch);
         thread_sendMessageBatch.start();
         System.out.println("thread_sendMessageBatch=" +  thread_sendMessageBatch.getPriority());

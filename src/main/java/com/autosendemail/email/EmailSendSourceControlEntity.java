@@ -21,7 +21,7 @@ public class EmailSendSourceControlEntity {
     private int plan_send_count ;
 
     @Column(name = "FACT_SEND_COUNT")
-    private String fact_send_count;
+    private int fact_send_count;
 
     @Column(name = "FACT_SEND_SUCC_COUNT")
     private int fact_send_succ_count;
@@ -70,11 +70,11 @@ public class EmailSendSourceControlEntity {
         this.plan_send_count = plan_send_count;
     }
 
-    public String getFact_send_count() {
+    public int getFact_send_count() {
         return fact_send_count;
     }
 
-    public void setFact_send_count(String fact_send_count) {
+    public void setFact_send_count(int fact_send_count) {
         this.fact_send_count = fact_send_count;
     }
 

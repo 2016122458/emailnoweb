@@ -23,15 +23,17 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
 
     private EmailBatchInfoService emailBatchInfoService;
 
-    @Autowired
     private EmailSendSourceControlRepository emailSendSourceControlRepository;
 
-    @Autowired
     private EmailAutoSendConfigRepository emailAutoSendConfigRepository;
 
-    public EmailAppRunableForCloudEmailBatch( EmailDbOperate emailDbOperate, EmailBatchInfoService emailBatchInfoService){
+    public EmailAppRunableForCloudEmailBatch( EmailDbOperate emailDbOperate, EmailBatchInfoService emailBatchInfoService,
+                                              EmailSendSourceControlRepository emailSendSourceControlRepository,
+                                              EmailAutoSendConfigRepository emailAutoSendConfigRepository){
         this.emailDbOperateForSend = emailDbOperate;
         this.emailBatchInfoService = emailBatchInfoService;
+        this.emailAutoSendConfigRepository = emailAutoSendConfigRepository;
+        this.emailSendSourceControlRepository = emailSendSourceControlRepository;
     }
 
     public void run() {
@@ -95,6 +97,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                     emailSendSourceControlEntity.setSendway("02");
                     emailSendSourceControlEntity.setIsopen("1");
                     emailSendSourceControlEntity.setPlan_send_count(emailAutoSendConfigEntity.getSendcount());
+                    emailSendSourceControlEntity.setFact_send_count(0);
                     emailSendSourceControlEntity.setSleep_minute_min(5);
                     emailSendSourceControlEntity.setSleep_minute_max(10);
                     emailSendSourceControlEntity.setIsopenTest("1");
