@@ -99,8 +99,8 @@ public class EmailDbOperate {
 
         if(isBatchSet){
             sql = "SELECT e.*,b.PRIORITY FROM EMAILS_SEND_TODAY e,EMAILS_BATCH_CONTROL b " +
-                    "WHERE e.SEND_STATUS IN ('00') AND e.EMAIL_BATCH = b.EMAIL_BATCH AND b.PLAN_DATE='"
-                    + datestr2 + "' AND b.IS_OPEN='1' ORDER BY PRIORITY DESC,EMAIL_LOAD_TIME ASC limit "
+                    "WHERE e.SEND_STATUS IN ('00') AND e.EMAIL_BATCH = b.EMAIL_BATCH AND b.IS_OPEN='1' " +
+                    "ORDER BY PRIORITY DESC,EMAIL_LOAD_TIME ASC limit "
                     + limitcount ;
         }
         System.out.println(datestr1 + sql);
@@ -228,7 +228,7 @@ public class EmailDbOperate {
     }
 
     public Map<String, Object> getSendBatchArg(String datestr){
-        String sql = "SELECT * FROM EMAILS_BATCH_CONTROL WHERE PLAN_DATE='" + datestr +"' AND IS_OPEN='1'";
+        String sql = "SELECT * FROM EMAILS_BATCH_CONTROL WHERE IS_OPEN='1'";
         SimpleDateFormat dateFormater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr1 = dateFormater1.format(new Date());
         datestr1 = "邮件发送控制模块:" + datestr1+"  ";
@@ -592,6 +592,15 @@ public class EmailDbOperate {
             result = jdbcTemplate.update(sql);
         }
         System.out.println("邮件发送模块 更新 EMAIL_APIKEY_SEND_DAY_INFO发送条数 " + sql);
+        return result;
+    }
+
+
+    public int upDateBatchControl(String email_batch){
+        String sql = "";
+        sql = "UPDATE EMAILS_BATCH_CONTROL SET IS_OPEN='0' WHERE EMAIL_BATCH='" + email_batch + "'";
+        int result = jdbcTemplate.update(sql);
+        System.out.println("邮件发送模块 更新 EMAIL_Batch_Control " + sql);
         return result;
     }
 

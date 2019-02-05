@@ -52,10 +52,8 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
     }
 
     public void sendEmailBatch(){
-
         SimpleDateFormat dateFormater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr1 = dateFormater1.format(new Date());
-
         datestr1 = "邮件发送模块:" + datestr1+"  ";
         SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
         String datestr = dateFormater.format(new Date());
@@ -66,30 +64,10 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
         int min = 0;
         int max = 0;
         String sendway = "";
-
         Map map = emailDbOperateForSend.getSendDay(datestr,"01");
-
-        if(map != null){
-            is_open_Test = map.get("IS_OPEN_TEST").toString();
-            is_open = map.get("IS_OPEN").toString();
-            plan_send_count = Integer.parseInt(map.get("PLAN_SEND_COUNT").toString());
-            fact_send_count = Integer.parseInt(map.get("FACT_SEND_COUNT").toString());
-            min = Integer.parseInt(map.get("SLEEP_MINUTE_MIN").toString());
-            max = Integer.parseInt(map.get("SLEEP_MINUTE_MAX").toString());
-            sendway = map.get("SEND_WAY").toString();
-            System.out.println(datestr1 + "手工设置获取发送计划：" + plan_send_count);
-        }else{
-            Map map1 = emailDbOperateForSend.getSendDay(datestr,"02");
-            if(map1 != null){
-                is_open_Test = map1.get("IS_OPEN_TEST").toString();
-                is_open = map1.get("IS_OPEN").toString();
-                plan_send_count = Integer.parseInt(map1.get("PLAN_SEND_COUNT").toString());
-                fact_send_count = Integer.parseInt(map1.get("FACT_SEND_COUNT").toString());
-                min = Integer.parseInt(map1.get("SLEEP_MINUTE_MIN").toString());
-                max = Integer.parseInt(map1.get("SLEEP_MINUTE_MAX").toString());
-                sendway = map1.get("SEND_WAY").toString();
-                System.out.println(datestr1 + "自动设置获取发送计划：" + plan_send_count);
-            }else {
+        if(map == null){
+            map = emailDbOperateForSend.getSendDay(datestr,"02");
+            if(map == null){
                 EmailAutoSendConfigEntity emailAutoSendConfigEntity = emailAutoSendConfigRepository.findOne("01");
                 if (emailAutoSendConfigEntity != null && "1".equalsIgnoreCase(emailAutoSendConfigEntity.getIsopen())) {
                     EmailSendSourceControlEntity emailSendSourceControlEntity = new EmailSendSourceControlEntity();
@@ -111,6 +89,16 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                 }
                 return;
             }
+        }
+
+        if(map != null){
+            is_open_Test = map.get("IS_OPEN_TEST").toString();
+            is_open = map.get("IS_OPEN").toString();
+            plan_send_count = Integer.parseInt(map.get("PLAN_SEND_COUNT").toString());
+            fact_send_count = Integer.parseInt(map.get("FACT_SEND_COUNT").toString());
+            min = Integer.parseInt(map.get("SLEEP_MINUTE_MIN").toString());
+            max = Integer.parseInt(map.get("SLEEP_MINUTE_MAX").toString());
+            sendway = map.get("SEND_WAY").toString();
         }
 
         if("0".equals(is_open)){
@@ -298,6 +286,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                                 if(batchcount == (sendfailcount + sendsucccount)){
                                     emailBatchInfoBean.setEmail_batch_status("02");
                                     emailBatchInfoService.updateEmailBatchInfo(emailBatchInfoBean);
+                                    emailDbOperateForSend.upDateBatchControl(email_batch);
                                 }
                                 System.out.println("更新完毕");
                             }
