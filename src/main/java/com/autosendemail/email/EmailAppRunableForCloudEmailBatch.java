@@ -158,6 +158,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                         String sendsource = "";
                         String postUrl = "";
                         String source_des = "";
+                        String apiwebuser = "";
                         int monthCount = 0;
                         Map resultChoose = new HashMap();
                         List<Map<String, Object>> list = emailDbOperateForSend.getAllApiKey();
@@ -203,6 +204,8 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                             sendsource = resultChoose.get("SEND_SOURCE").toString();
                             source_des = EmailUnit.SOURCE.get(sendsource).toString();
                             postUrl = resultChoose.get("POST_URL").toString();
+                            apiwebuser = resultChoose.get("API_WEB_USER").toString();
+
                         }
 
                         sourceBean.setSend_source(sendsource);
@@ -225,7 +228,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                             if(apiKeyDayCount % 50 == 0){
                                 System.out.println(datestr1 + "开始发送探测邮件!");
                                 emailinfo.setEmail_to("wangshuaiws0716@163.com");
-                                emailinfo.setEmail_subject(apikey + "探测邮件");
+                                emailinfo.setEmail_subject("用户：" + apiwebuser + ",发送探测邮件");
                             }else {
                                 emailinfo.setEmail_to(emaiinfoArrd.get("EMAIL_ADDR").toString());
                             }
