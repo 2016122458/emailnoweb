@@ -19,13 +19,11 @@ import java.io.UnsupportedEncodingException;
 @Service
 public class EmailMailGunHandle implements EmailHandle {
 
-    private static String MAILGUNURL = "https://api.mailgun.net/v3/bosun-mould.top/messages";
-
-    private static String APIKEY = "key-c12ed697321e623871fc4b3cbb0af161";
+    private String MAILGUNURL = "https://api.mailgun.net/v3/";
 
     private static String SOURCE = "02";
 
-    private static String DOMAIN = "@bosun-mould.top";
+    private String domain = "premiermfgco.com";
 
     @Override
     public void sendEmail(EmailUserInfo emailUserInfo, EmailInfo emailInfo) throws MessagingException, UnsupportedEncodingException, UnirestException {
@@ -45,12 +43,13 @@ public class EmailMailGunHandle implements EmailHandle {
     @Override
     public String sendEmailResult(EmailUserInfo emailUserInfo, EmailInfo emailInfo,String apikey) throws MessagingException, UnsupportedEncodingException, UnirestException {
         String flag = "1";
-        HttpResponse<JsonNode> request = Unirest.post(MAILGUNURL)
+        HttpResponse<JsonNode> request = Unirest.post(MAILGUNURL + domain + "/messages")
                 .basicAuth("api", apikey)
                 .queryString("from", emailInfo.getEmail_from())
                 .queryString("to", emailInfo.getEmail_to())
                 .queryString("subject", emailInfo.getEmail_subject())
                 .queryString("html", emailInfo.getEmail_content())
+                .queryString("h:reply-to",emailInfo.getEmail_reply_to())
                 .asJson();
         String respone = request.getBody().toString();
         System.out.println("MailGun 发送结果:" + respone);
@@ -70,6 +69,10 @@ public class EmailMailGunHandle implements EmailHandle {
 
     @Override
     public String getDomain() {
-        return DOMAIN;
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

@@ -80,11 +80,14 @@ public class EmailOperateControllerRest {
     }
 
     @RequestMapping(value="/mailgun")
-    public EmailResult sendMessageForMailgun(@RequestBody EmailInfo emailInfo,@RequestHeader String authorization){
+    public EmailResult sendMessageForMailgun(@RequestBody EmailInfo emailInfo,
+                                             @RequestParam String domain,
+                                             @RequestHeader String authorization){
         EmailResult resultFlag = new EmailResult();
         String flagSend = "0";
         EmailUserInfo emailUserInfo = new EmailUserInfo();
         try {
+            emailMailGunHandle.setDomain(domain);
             flagSend = emailMailGunHandle.sendEmailResult(emailUserInfo, emailInfo, authorization);
         }catch (Exception e){
 
