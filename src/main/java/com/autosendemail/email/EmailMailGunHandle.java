@@ -45,7 +45,7 @@ public class EmailMailGunHandle implements EmailHandle {
         String flag = "1";
         HttpResponse<JsonNode> request = Unirest.post(MAILGUNURL + domain + "/messages")
                 .basicAuth("api", apikey)
-                .queryString("from", emailInfo.getEmail_from())
+                .queryString("from", emailInfo.getEmail_from() + " <" + emailInfo.getEmail_from() + ">")
                 .queryString("to", emailInfo.getEmail_to())
                 .queryString("subject", emailInfo.getEmail_subject())
                 .queryString("html", emailInfo.getEmail_content())
