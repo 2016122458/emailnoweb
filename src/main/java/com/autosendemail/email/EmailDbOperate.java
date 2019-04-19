@@ -513,9 +513,9 @@ public class EmailDbOperate {
         return list;
     }
 
-    public List getAllApiKey(){
+    public List getAllApiKey(String sendsource){
         String apikey ="";
-        String sql = "SELECT * FROM EMAIL_APIKEY_INFO WHERE APIKEY_STATUS='01' ORDER BY API_KEY";
+        String sql = "SELECT * FROM EMAIL_APIKEY_INFO WHERE APIKEY_STATUS='01' AND SEND_SOURCE='" + sendsource + "' ORDER BY API_KEY";
         System.out.println("邮件发送模块ALL获取AIPKEY " + sql);
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         if(list.size()==0){
@@ -602,6 +602,30 @@ public class EmailDbOperate {
         int result = jdbcTemplate.update(sql);
         System.out.println("邮件发送模块 更新 EMAIL_Batch_Control " + sql);
         return result;
+    }
+
+    public int upDateEmailForWait(String emailaddr){
+        SimpleDateFormat dateFormater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datestr1 = dateFormater1.format(new Date());
+        datestr1 = "邮件发送控制模块:" + datestr1+"  ";
+
+        String sql = "UPDATE EMAILS_SEND_TODAY SET SEND_STATUS ='03',SEND_STATUS_DES='待处理' WHERE EMAIL_ADDR='"
+                + emailaddr + "'";
+        System.out.println(datestr1 + sql);
+
+        return jdbcTemplate.update(sql);
+    }
+
+    public int upDateEmailForRes(String emailaddr){
+        SimpleDateFormat dateFormater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datestr1 = dateFormater1.format(new Date());
+        datestr1 = "邮件发送控制模块:" + datestr1+"  ";
+
+        String sql = "UPDATE EMAILS_SEND_TODAY SET SEND_STATUS ='00',SEND_STATUS_DES='初始化' WHERE EMAIL_ADDR='"
+                + emailaddr + "' AND SEND_STATUS='03'";
+        System.out.println(datestr1 + sql);
+
+        return jdbcTemplate.update(sql);
     }
 
 }

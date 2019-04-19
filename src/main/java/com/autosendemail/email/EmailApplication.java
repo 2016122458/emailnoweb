@@ -39,17 +39,24 @@ public class EmailApplication implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-//        EmailAppRunableForCloudEmail emailAppRunableForSendGrid =
-//                new EmailAppRunableForCloudEmail(emailSendGridHandle,emailDbOperateForSend,emailBatchInfoService);
-//        Thread thread_sendGrid = new Thread(emailAppRunableForSendGrid);
-//        thread_sendGrid.start();
-//        System.out.println("thread_sendGrid=" +  thread_sendGrid.getPriority());
-        EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatch =
+        EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatchSendGrid =
                 new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService,
-                        emailSendSourceControlRepository,emailAutoSendConfigRepository);
-        Thread thread_sendMessageBatch = new Thread(emailAppRunableForCloudEmailBatch);
-        thread_sendMessageBatch.start();
-        System.out.println("thread_sendMessageBatch=" +  thread_sendMessageBatch.getPriority());
+                        emailSendSourceControlRepository,emailAutoSendConfigRepository, EmailSendServerType.SENDGRID);
+        Thread thread_sendMessageBatchSendGrid = new Thread(emailAppRunableForCloudEmailBatchSendGrid);
+        thread_sendMessageBatchSendGrid.start();
+        System.out.println("thread_sendMessageBatch=" +  thread_sendMessageBatchSendGrid.getPriority());
+
+        Thread.sleep(10*1000);
+
+        EmailAppRunableForCloudEmailBatch emailAppRunableForCloudEmailBatchMailGun =
+                new EmailAppRunableForCloudEmailBatch(emailDbOperateForSend,emailBatchInfoService,
+                        emailSendSourceControlRepository,emailAutoSendConfigRepository, EmailSendServerType.MAILGUN);
+        Thread thread_sendMessageBatchMailGun = new Thread(emailAppRunableForCloudEmailBatchMailGun);
+        thread_sendMessageBatchMailGun.start();
+        System.out.println("thread_sendMessageBatchMailGun=" +  thread_sendMessageBatchMailGun.getPriority());
+
+
+
 
     }
 }

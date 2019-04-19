@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,13 +24,18 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
 
     private EmailAutoSendConfigRepository emailAutoSendConfigRepository;
 
+    private EmailSendServerType emailSendServerType;
+
+
     public EmailAppRunableForCloudEmailBatch( EmailDbOperate emailDbOperate, EmailBatchInfoService emailBatchInfoService,
                                               EmailSendSourceControlRepository emailSendSourceControlRepository,
-                                              EmailAutoSendConfigRepository emailAutoSendConfigRepository){
+                                              EmailAutoSendConfigRepository emailAutoSendConfigRepository,
+                                              EmailSendServerType emailSendServerType){
         this.emailDbOperateForSend = emailDbOperate;
         this.emailBatchInfoService = emailBatchInfoService;
         this.emailAutoSendConfigRepository = emailAutoSendConfigRepository;
         this.emailSendSourceControlRepository = emailSendSourceControlRepository;
+        this.emailSendServerType = emailSendServerType;
     }
 
     public void run() {
@@ -148,10 +150,16 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                     }
                     return;
                 }
+
                 if (toEmails != null && toEmails.size() > 0) {
                     System.out.println(datestr1 + "当前时间：" + datestr + ",有可用发送地址！");
                     EmailSourceBean sourceBean = new EmailSourceBean();
                     sourceBean.setPlan_date(datestr);
+
+                    //预处理为待处理状态
+                    for (Map emaiinfoArrdT : toEmails) {
+                        emailDbOperateForSend.upDateEmailForWait(emaiinfoArrdT.get("EMAIL_ADDR").toString());
+                    }
 
                     for (Map emaiinfoArrd : toEmails) {
                         String apikey = "";
@@ -161,15 +169,16 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                         String apiwebuser = "";
                         int monthCount = 0;
                         Map resultChoose = new HashMap();
-                        List<Map<String, Object>> list = emailDbOperateForSend.getAllApiKey();
+                        List<Map<String, Object>> list = emailDbOperateForSend.getAllApiKey(emailSendServerType.getTranCode());
                         if(list == null){
-                            System.out.println(datestr1 + "APIKEY不可用!");
-                            try {
-                                Thread.sleep(1000 * 60 * 2);
-                            }catch(Exception e){
-                                System.out.println(datestr1 + "APIKEY不可用!");
-                            }
-                            return;
+//                            System.out.println(datestr1 + "APIKEY不可用!");
+//                            try {
+//                                Thread.sleep(1000 * 60 * 2);
+//                            }catch(Exception e){
+//                                System.out.println(datestr1 + "APIKEY不可用!");
+//                            }
+//                            return;
+                            break;
                         }
                         resultChoose.put("MONTH_API_KEY_COUNT",0);
                         for (Map result : list){
@@ -197,7 +206,8 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                             }catch(Exception e){
 
                             }
-                            return;
+
+                            break;
                         }else {
                             System.out.println("resultChoose===="  + resultChoose.toString());
                             apikey = resultChoose.get("API_KEY").toString();
@@ -295,6 +305,12 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                             }
                         }
                     }
+
+                    //处理待处理状态数据
+                    for (Map emaiinfoArrdRes : toEmails) {
+                        emailDbOperateForSend.upDateEmailForRes(emaiinfoArrdRes.get("EMAIL_ADDR").toString());
+                    }
+
                 }
             }
         }

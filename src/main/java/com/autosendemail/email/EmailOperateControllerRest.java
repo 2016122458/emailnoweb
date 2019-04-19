@@ -60,7 +60,7 @@ public class EmailOperateControllerRest {
         System.out.println("EmailInfo emailInfo===" + emailInfo.getEmail_to() + "authorization===" + authorization);
         EmailResult result = new EmailResult();
         System.out.println("content:" + emailInfo.getEmail_content());
-        String flag = "0";
+        String flag = "1";
         EmailUserInfo emailUserInfo = new EmailUserInfo();
         try {
             flag = emailSendGridHandle.sendEmailResult(emailUserInfo, emailInfo, authorization);
@@ -84,7 +84,7 @@ public class EmailOperateControllerRest {
                                              @RequestParam(required=false) String domain,
                                              @RequestHeader String authorization){
         EmailResult resultFlag = new EmailResult();
-        String flagSend = "0";
+        String flagSend = "1";
         EmailUserInfo emailUserInfo = new EmailUserInfo();
         try {
             if(domain != null) {
