@@ -286,7 +286,7 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
 
                             SimpleDateFormat monthFormatTemp = new SimpleDateFormat("yyyyMMdd");
                             String monthDayTemp = monthFormatTemp.format(new Date());
-                            emailDbOperateForSend.updateSendSourceApiKeyCount(apikey,sendsource,monthDayTemp);
+                            emailDbOperateForSend.updateSendSourceApiKeyCount(apikey,sendsource,monthDayTemp,send_status);
                             //更新批次表状态
                             if(emailBatchInfoService == null){
                                 System.out.println("emailBatchInfoService is null");

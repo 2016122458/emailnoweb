@@ -534,7 +534,7 @@ public class EmailDbOperate {
 
 
     public int getApiKeyMonthCount(String apikey,String sendsource,String month){
-        String sql = "SELECT SUM(FACT_DAY_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
+        String sql = "SELECT SUM(FACT_DAY_SUCESS_COUNT + FACT_DAY_FAIL_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
                 + apikey + "' AND SEND_SOURCE='" +  sendsource + "' AND SEND_DATE like '" + month +"%'";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         if(list.size()<=0){
@@ -551,7 +551,7 @@ public class EmailDbOperate {
 
 
     public int getApiKeyMonthCountByApiKey(String apikey,String month){
-        String sql = "SELECT SUM(FACT_DAY_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
+        String sql = "SELECT SUM(FACT_DAY_SUCESS_COUNT + FACT_DAY_FAIL_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
                 + apikey + "' AND SEND_DATE like '" + month +"%'";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         if(list.size()<=0){
@@ -567,7 +567,7 @@ public class EmailDbOperate {
     }
 
     public int getApiKeyDayCount(String apikey,String sendsource,String day){
-        String sql = "SELECT SUM(FACT_DAY_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
+        String sql = "SELECT SUM(FACT_DAY_SUCESS_COUNT + FACT_DAY_FAIL_COUNT) AS COUNTNUM FROM EMAIL_APIKEY_SEND_DAY_INFO WHERE API_KEY='"
                 + apikey + "' AND SEND_SOURCE='" +  sendsource + "' AND SEND_DATE = '" + day +"'";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         if(list.size()<=0){
@@ -582,10 +582,15 @@ public class EmailDbOperate {
         return count;
     }
 
-    public int updateSendSourceApiKeyCount(String apikey,String sendsource,String monthDay){
+    public int updateSendSourceApiKeyCount(String apikey,String sendsource,String monthDay,String send_status){
         String sql = "";
-        sql = "UPDATE EMAIL_APIKEY_SEND_DAY_INFO SET FACT_DAY_COUNT=FACT_DAY_COUNT + 1 WHERE API_KEY='"
-                +  apikey + "' AND SEND_SOURCE='" + sendsource + "' AND SEND_DATE='" + monthDay + "'";
+        if(EmailUnit.SEND_STATUS_SUCCESS.equals(send_status)){
+            sql = "UPDATE EMAIL_APIKEY_SEND_DAY_INFO SET FACT_DAY_SUCESS_COUNT=FACT_DAY_SUCESS_COUNT + 1 WHERE API_KEY='"
+                    +  apikey + "' AND SEND_SOURCE='" + sendsource + "' AND SEND_DATE='" + monthDay + "'";
+        }else if(EmailUnit.SEND_STATUS_FAIL.equals(send_status)){
+            sql = "UPDATE EMAIL_APIKEY_SEND_DAY_INFO SET FACT_DAY_FAIL_COUNT=FACT_DAY_FAIL_COUNT + 1 WHERE API_KEY='"
+                    +  apikey + "' AND SEND_SOURCE='" + sendsource + "' AND SEND_DATE='" + monthDay + "'";
+        }
         int result = jdbcTemplate.update(sql);
         if(result <= 0) {
             sql = "INSERT INTO EMAIL_APIKEY_SEND_DAY_INFO VALUES ('" + apikey + "','"+ sendsource +"','"+ monthDay + "',1)";
