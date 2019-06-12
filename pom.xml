@@ -5,7 +5,7 @@
 
     <groupId>com.autosendemail</groupId>
     <artifactId>email</artifactId>
-    <version>email-auto-sendemaibatch-20190418-1.0.0</version>
+    <version>email-auto-sendemaibatch-20190613-1.0.0</version>
     <packaging>jar</packaging>
 
     <name>email</name>
