@@ -593,7 +593,14 @@ public class EmailDbOperate {
         }
         int result = jdbcTemplate.update(sql);
         if(result <= 0) {
-            sql = "INSERT INTO EMAIL_APIKEY_SEND_DAY_INFO VALUES ('" + apikey + "','"+ sendsource +"','"+ monthDay + "',1)";
+            if(EmailUnit.SEND_STATUS_SUCCESS.equals(send_status)){
+                sql = "INSERT INTO EMAIL_APIKEY_SEND_DAY_INFO VALUES ('" + apikey + "','"+ sendsource +"','"+ monthDay + "',1,0)";
+            }else if(EmailUnit.SEND_STATUS_FAIL.equals(send_status)){
+                sql = "INSERT INTO EMAIL_APIKEY_SEND_DAY_INFO VALUES ('" + apikey + "','"+ sendsource +"','"+ monthDay + "',0,1)";
+            }else {
+                sql = "INSERT INTO EMAIL_APIKEY_SEND_DAY_INFO VALUES ('" + apikey + "','"+ sendsource +"','"+ monthDay + "',0,0)";
+            }
+
             result = jdbcTemplate.update(sql);
         }
         System.out.println("邮件发送模块 更新 EMAIL_APIKEY_SEND_DAY_INFO发送条数 " + sql);
