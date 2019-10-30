@@ -296,8 +296,11 @@ public class EmailAppRunableForCloudEmailBatch implements  Runnable{
                                 int batchcount = emailBatchInfoBean.getEmail_batch_count();
                                 int sendfailcount = emailBatchInfoBean.getEmail_send_fail_count();
                                 int sendsucccount = emailBatchInfoBean.getEmail_send_succ_count();
+                                int sendCount = Integer.parseInt(emailBatchInfoBean.getPriority());
+                                sendCount = sendCount  + 1;
                                 if(batchcount == (sendfailcount + sendsucccount)){
                                     emailBatchInfoBean.setEmail_batch_status("02");
+                                    emailBatchInfoBean.setPriority(String.valueOf(sendCount));
                                     emailBatchInfoService.updateEmailBatchInfo(emailBatchInfoBean);
                                     emailDbOperateForSend.upDateBatchControl(email_batch);
                                 }
